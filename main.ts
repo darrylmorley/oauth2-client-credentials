@@ -25,17 +25,20 @@ export class OAuthClient {
 
   // Method to request a new token
   private async requestNewToken(): Promise<TokenResponse> {
+    const basicAuth = btoa(`${this.clientId}:${this.clientSecret}`);
+
     const response = await fetch(this.tokenUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${basicAuth}`,
       },
       body: new URLSearchParams({
         grant_type: "client_credentials",
-        client_id: this.clientId,
-        client_secret: this.clientSecret,
-      }),
+      }).toString(),
     });
+
+    console.log(response);
 
     if (!response.ok) {
       throw new Error(`Failed to get token: ${response.statusText}`);
